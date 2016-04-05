@@ -1,0 +1,46 @@
+From 5a0595a4e1064c6c75b4f9ad36a2c3f23634152e Mon Sep 17 00:00:00 2001
+From: djjh <dylanholmes206@gmail.com>
+Date: Tue, 5 Apr 2016 08:37:38 -0700
+Subject: [PATCH] Ignoring SSL certificates.
+
+---
+ glad/opener.py | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/glad/opener.py b/glad/opener.py
+index f930ece..02eba12 100644
+--- a/glad/opener.py
++++ b/glad/opener.py
+@@ -1,13 +1,14 @@
+ from contextlib import closing
+ import logging
+ import sys
++import ssl
+ 
+ if sys.version_info >= (3, 0):
+     _is_py3 = True
+-    from urllib.request import build_opener, ContentTooShortError
++    from urllib.request import build_opener, ContentTooShortError, HTTPSHandler
+ else:
+     _is_py3 = False
+-    from urllib2 import build_opener
++    from urllib2 import build_opener, HTTPSHandler
+     from urllib import FancyURLopener
+ 
+ 
+@@ -66,7 +67,11 @@ class URLOpener(object):
+     """
+     def __init__(self, user_agent='Mozilla/5.0'):
+         # the urllib2/urllib.request opener
+-        self.opener = build_opener()
++        ctx = ssl.create_default_context()
++        ctx.check_hostname = False
++        ctx.verify_mode = ssl.CERT_NONE
++
++        self.opener = build_opener(HTTPSHandler(context=ctx))
+         self.opener.addheaders = [('User-agent', user_agent)]
+ 
+         # the urllib opener (Python 2 only)
+-- 
+2.8.0.windows.1
+
