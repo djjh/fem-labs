@@ -1,0 +1,8 @@
+.DS_Store
+build
+make
+vs2010
+vs2015
+install
+*.build
+*.git

@@ -1,0 +1,3 @@
+[submodule "gen/dep-johnny"]
+	path = gen/dep-johnny
+	url = https://github.com/djjh/dep-johnny.git
